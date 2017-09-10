@@ -8,13 +8,13 @@ from subprocess import *
 ServerDir = "/home/wwwroot/"
 ServerUpdateFileDir = 'UpdateFile'
 ServerBakDir = "BackupFile"
-dirlist = []
 
 def get_foward_dir():
 	return os.getcwd()
 
 #用于读取更新文档目录的方法
 def read_update_dir():
+	dirlist = []
 	#定义需要更新的目录及文件列表
 	#使用os.walk()函数实现遍历当前路径下的所有目录结构，输出为列表，列表值为tuple（元组）
 	for i in os.walk("."):
