@@ -3,9 +3,10 @@
 
 import os
 import sys
+import time
 from subprocess import *
 
-ServerDir = "/home/wwwroot/"
+ServerDir = "/home/wwwroot/home-hh-test"
 ServerUpdateFileDir = 'UpdateFile'
 ServerBakDir = "BackupFile"
 
@@ -13,8 +14,10 @@ def get_foward_dir():
 	return os.getcwd()
 
 #用于读取更新文档目录的方法
-def read_update_dir():
+def read_update_dir(vision_flag):
 	dirlist = []
+	path_file_list1 = {}
+	path_file_list2 = {}
 	#定义需要更新的目录及文件列表
 	#使用os.walk()函数实现遍历当前路径下的所有目录结构，输出为列表，列表值为tuple（元组）
 	for i in os.walk("."):
@@ -24,7 +27,8 @@ def read_update_dir():
 			dirlist.append(i)
 			#print(dirlist)
 	if dirlist == []:
-		print("\033[1;31m 注意： \033[0mUpdateFile文件夹下不存在可更新文件！按回车键退出！")
+		if vision_flag :
+			print("\033[1;31m 注意： \033[0mUpdateFile文件夹下不存在可更新文件！按回车键退出！")
 		#print(dirlist)
 		input("")
 		exit()
@@ -34,12 +38,20 @@ def read_update_dir():
 	list_num = 0
 	#使用循环取出需要更新的目录路径及文件名称列表
 	while list_num < dirlist_length:
-		update_dir = dirlist[list_num][0]
-		print('-'*50)
-		print("需要更新的目录%d：\033[4;31m %s \033[0m"%((list_num+1),update_dir))
+
+		update_dir = dirlist[list_num][0][1::]
+		
+		if vision_flag:
+			print('-'*50)
+			print("需要更新的目录%d：\033[4;31m %s \033[0m"%((list_num+1),(ServerDir+update_dir+os.sep)))
+
 		update_file = dirlist[list_num][-1]
-		print("需要更新的文件列表%d：%s"%((list_num+1),update_file))
+		if vision_flag:
+			print("需要更新的文件列表%d：%s"%((list_num+1),update_file))
 		list_num+=1
+		#这里使用了Python3中字典的特性，将每次循环取出来的字典，再update进一个新的字典，这样才能在字典中保存另一个字典
+		path_file_list2.update(path_file_list1.fromkeys(update_file,(ServerDir+update_dir+os.sep)))
+	return path_file_list2
 
 #用于显示已更新过的文档目录
 def read_updated_dir():
@@ -52,21 +64,30 @@ def read_updated_dir():
 	#print(dirlist_length)
 	list_num2 = 0
 	while list_num2 < dirlist2_length:
-		update_dir2 = dirlist2[list_num2][0]
+		update_dir2 = dirlist2[list_num2][0][1::]
 		print('-'*50)
-		print("已更新的目录%d：\033[1;33m %s \033[0m"%((list_num2+1),update_dir2))
+		print("已更新的目录%d：\033[1;33m %s \033[0m"%((list_num2+1),(ServerDir+update_dir2)))
 		update_file2 = dirlist2[list_num2][-1]
 		print("已更新的文件列表%d：\033[1;31m %s \033[0m"%((list_num2+1),update_file2))
 		list_num2+=1
+
 
 def read_bak_dir():
 	pass
 
 def do_update_file():
-	pass
+	vision_flag = False
+	path_file_list=read_update_dir(vision_flag)
+	pfl_len=len(path_file_list)
+	for path_file,path_dir in path_file_list.items():
+		print(path_dir,"\033[1;33m %s \033[0m"%path_file)
+		time.sleep(0.2)
 
 def do_backup_file():
 	pass
+
+#def into_server_need2update_file(need_update_path,need_update_file):
+	#pass
 
 def restart_server():
 	pass
@@ -74,6 +95,9 @@ def restart_server():
 def main():
 	#update_flag用于表示文件是否已经更新过
 	update_flag = True
+	#vision_flag用于表示是否显示函数里的打印语句
+	vision_flag = True
+
 	list_x = []
 
 	#定义当前目录路径
@@ -119,12 +143,15 @@ def main():
 		#判断是否已经更新过
 		if update_flag:
 			#未更新则执行下面语句
-			read_update_dir()
+			read_update_dir(vision_flag)
 			print('*'*50)
 			update_usr_input = input("\033[1;31m 注意 \033[0m是否开始更新文件：\n 1.开始更新 \n 2.不更新 \n 3.退出更新程序 \n 请选择(数字键1/2/3，默认3)：")
 			if update_usr_input == "1":
 				print("\033[1;31m 开始更新，请勿进行其他操作... \033[0m")
-				#这里写更新代码
+
+				do_update_file()
+
+
 				print("更新成功完成！")
 				update_flag = False
 				input("")
