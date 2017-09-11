@@ -80,8 +80,8 @@ def do_update_file():
 	path_file_list=read_update_dir(vision_flag)
 	pfl_len=len(path_file_list)
 	for path_file,path_dir in path_file_list.items():
-		print(" 已更新：%s \033[1;33m %s \033[0m"%(path_dir,path_file))
-		#time.sleep(0.5)
+		print(" 已更新：%s \033[1;33m %s \033[0m"%(("..."+path_dir[13::]),path_file))
+		time.sleep(0.5)
 
 def do_backup_file():
 	pass
