@@ -10,6 +10,13 @@ ServerDir = "/home/wwwroot/home-hh-test"
 ServerUpdateFileDir = 'UpdateFile'
 ServerBakDir = "BackupFile"
 
+def print_point():
+
+	for i in range(100):
+		percent = 1.0*i/100*100
+		print('完成进度：\033[1;31m %.2s %s \033[0m'%(str(percent),'%'),end='\r')
+		time.sleep(0.08)
+
 def get_foward_dir():
 	return os.getcwd()
 
@@ -79,12 +86,14 @@ def do_update_file():
 	vision_flag = False
 	path_file_list=read_update_dir(vision_flag)
 	pfl_len=len(path_file_list)
+	#遍历字典path_file_list，取出其中的key,value用于显示和更新
 	for path_file,path_dir in path_file_list.items():
 		print(" 已更新：%s \033[1;33m %s \033[0m"%(("..."+path_dir[13::]),path_file))
 		time.sleep(0.5)
 
 def do_backup_file():
-	pass
+	print_point()
+	print("\033[1;33m 备份服务器文件完成！ \033[0m")
 
 #def into_server_need2update_file(need_update_path,need_update_file):
 	#pass
@@ -145,19 +154,21 @@ def main():
 			#未更新则执行下面语句
 			read_update_dir(vision_flag)
 			print('*'*50)
-			update_usr_input = input("\033[1;31m 注意 \033[0m是否开始更新文件：\n 1.开始更新 \n 2.不更新 \n 3.退出更新程序 \n 请选择(数字键1/2/3，默认3)：")
+			update_usr_input = input("\033[1;31m 注意 \033[0m是否开始更新文件：\n 1.开始更新 \n 2.不更新只备份文件 \n 3.退出更新程序 \n 请选择(数字键1/2/3，默认3)：")
 			if update_usr_input == "1":
 				print("\033[1;31m 开始更新，请勿进行其他操作... \033[0m")
-
+				
+				#先备份
+				do_backup_file()
+				#后更新
 				do_update_file()
-
 
 				print("更新成功完成！")
 				update_flag = False
 				input("")
 				continue
 			elif update_usr_input == "2":
-				print("未更新任何文件！")
+				do_backup_file()
 				input("")
 				continue
 			elif update_usr_input == "3":
