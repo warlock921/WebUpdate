@@ -6,9 +6,17 @@ import sys
 import time
 from subprocess import *
 
-ServerDir = "/home/wwwroot/home-hh-test"
+ServerDir=''
 ServerUpdateFileDir = 'UpdateFile'
 ServerBakDir = "BackupFile"
+
+if os.name == 'posix':
+        ServerDir = "/home/wwwroot/home-hh-test"
+elif os.name == 'nt':
+        ServerDir = "/home/wwwroot/home-hh-test"
+        os.sep = '/'
+
+print(os.sep)
 
 def print_point():
 
